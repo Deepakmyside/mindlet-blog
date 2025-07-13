@@ -2,10 +2,13 @@
 import Navbar from "./Navbar";
 export default function Layout({ children }) {
   return (
-    <div className="bg-[#fdf6e3] min-h-screen">
+    <div className="bg-[#fffdf6] min-h-screen flex flex-col overflow-x-hidden">
       <Navbar/>
-      <div className="pt-[80px] px-4">{children}</div> {/* Space below navbar */}
-    </div>
-  );
-}
+      <main className=" flex-grow  bg-[#fffdf6]">{children} 
+      
+    </main>
+
+    </div> 
+  )
+};
 
