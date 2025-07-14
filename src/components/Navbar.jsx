@@ -12,7 +12,7 @@ const Navbar = () => {
          
 
       /*  dummy login state*/
-        const [isLoggedIn, setIsLoggedIn] = useState(true); // or false if testing
+        const [isLoggedIn, setIsLoggedIn] = useState(null); // or false if testing
 const navigate = useNavigate();
 
 const handleLogout = () => {

@@ -9,7 +9,7 @@ import BlogCard from './components/BlogCard';
 import MyBlogs from './pages/MyBlogs';
 import BlogVisit from './pages/BlogVisit';
 import Admin from "./pages/Admin";
-
+import AddBlog from "./pages/AddBlog"; // 👈 import
 
 
 
@@ -28,7 +28,7 @@ const App = () => {
         <Route path='/blog/:id' element={<BlogVisit/>} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/myblogs" element={<MyBlogs />} />
-
+        <Route path="/add" element={<AddBlog />} />
 
 
       </Routes>

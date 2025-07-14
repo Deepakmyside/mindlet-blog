@@ -1,63 +1,82 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { Trash2, ExternalLink } from "lucide-react";
 
 const dummyBlogs = [
   {
     _id: "1",
     title: "Crypto is Booming",
-    description: "Short blog about crypto...",
-    author: "me@mindlet.com",
+    description: "A short blog about the latest trends in cryptocurrency...",
     createdAt: "2025-06-06T10:00:00Z",
-    tags: ['crypto'],
     image: "https://images.pexels.com/photos/730547/pexels-photo-730547.jpeg"
   },
   {
     _id: "2",
     title: "Startup Trends",
-    description: "About startups...",
-    author: "otheruser@site.com",
+    description: "Exploring developments in the startup ecosystem...",
     createdAt: "2025-06-10T10:00:00Z",
-    tags: ['startup'],
     image: "https://images.pexels.com/photos/3194521/pexels-photo-3194521.jpeg"
   }
 ];
 
 const MyBlogs = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
-      <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-10 tracking-tight text-center">
-  📚 My Blogs
-</h1>
+    <div className="max-w-3xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">📚 My Blogs</h1>
 
+      <div className="space-y-4">
+        {dummyBlogs.map((blog) => (
+          <Card
+            key={blog._id}
+            className="p-4 flex flex-col sm:flex-row gap-4 items-start justify-between hover:shadow-md transition rounded-md"
+          >
+            {/* Image */}
+            <img
+              src={blog.image}
+              alt={blog.title}
+              className="w-full sm:w-28 h-24 object-cover rounded-md"
+            />
 
-      {dummyBlogs.length === 0 ? (
-        <p className="text-gray-500">No blogs yet.</p>
-      ) : (
-        <div className="space-y-6">
-          {dummyBlogs.map(blog => (
-            <div key={blog._id} className="bg-white shadow-md rounded-lg p-4 flex flex-col sm:flex-row gap-4">
-              <img src={blog.image} alt={blog.title} className="w-full sm:w-40 h-32 object-cover rounded-md" />
-              <div className="flex flex-col flex-grow justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-800">{blog.title}</h2>
-                  <p className="text-sm text-gray-600 mb-1">{new Date(blog.createdAt).toDateString()}</p>
-                  <p className="text-sm text-gray-500">{blog.description.slice(0, 60)}...</p>
-                  <div className="mt-2 flex flex-wrap gap-1 text-xs">
-                    {blog.tags?.map(tag => (
-                      <span key={tag} className="bg-orange-100 text-orange-600 px-2 py-1 rounded-full">#{tag}</span>
-                    ))}
-                  </div>
-                </div>
-                <div className="mt-3 flex gap-3">
-                  <Button variant="outline" className="text-orange-600 border-orange-500 hover:bg-red-100 ">Visit</Button>
-                  <Button variant="outline" className="text-orange-600 border-orange-500 hover:bg-red-100 ">Delete</Button>
-                </div>
+            {/* Content */}
+            <div className="flex flex-col justify-between flex-grow w-full">
+              <div className="mb-2">
+                <h2 className="text-lg font-semibold text-gray-900 leading-snug line-clamp-2">
+                  {blog.title}
+                </h2>
+                <p className="text-sm text-gray-500 mb-1">{new Date(blog.createdAt).toDateString()}</p>
+                <p className="text-sm text-gray-700 line-clamp-2">{blog.description}</p>
+              </div>
+
+              {/* Buttons - aligned right on large, stacked on small */}
+              <div className="flex gap-3 mt-2 justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate(`/blog/${blog._id}`)}
+                  className="flex items-center gap-1 text-blue-600 border-blue-500 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Visit
+                </Button>
+
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white "
+                  
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Delete
+                </Button>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };

@@ -114,7 +114,7 @@ const Home = () => {
         </div>
 
         <div className="flex gap-2 flex-wrap justify-center mb-6 px-4">
-          {["all", "finance", "crypto", "startup", "health", "technologia", "bhakti"].map(tag => (
+          {["all", "finance", "health", "technology", "Education", "travel", "bhakti", "Food"].map(tag => (
             <button
               key={tag}
               onClick={() => setActiveTag(tag)}

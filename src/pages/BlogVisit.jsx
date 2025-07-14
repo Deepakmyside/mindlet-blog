@@ -1,15 +1,19 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
- const dummyBlogs = [
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CalendarDays, UserRound, MessageSquareText, Reply } from "lucide-react";
+
+const dummyBlogs = [
+  // ... (dummyBlogs array remains the same as previous code)
   {
     _id: "1",
     title: "Crypto is Booming",
-    description: "This is a blog about how crypto is transforming the future This dskfh sdkf kds nkfsdkfd gefng;sflkdgkfld g;sfdbefglksfd giesfdsgkfndj gfns.dgjfndgjksfndg.lesfkndgifd gnjesfd gjkasfn;dg esfngjksfjlkgnfdkgnsfxjkgnesfndg;ouesrgourje zgero;gerug horegrefgi e rgkj fjgksfndgjkf ndkjg fndkdsfwgfsdgefgkdrxngjsfdgsfndgknfsdjgsjrdfngjkcxkvsfxkcgnkdngxjkcxlvhfdybhsjkdnhvkizsjvkgfnh gmjfn,s v ej ghlas gkjashdgosfjkdnfjkvgansdlkvndslkbn/jfldcnbvjkfdbknsjnbzsnThis dskfh sdkf kds nkfsdkfd gefng;sflkdgkfld g;sfdbefglksfd giesfdsgkfndj gfns.dgjfndgjksfndg.lesfkndgifd gnjesfd gjkasfn;dg esfngjksfjlkgnfdkgnsfxjkgnesfndg;ouesrgourje zgero;gerug horegrefgi e rgkj fjgksfndgjkf ndkjg fndkdsfwgfsdgefgkdrxngjsfdgsfndgknfsdjgsjrdfngjkcxkvsfxkcgnkdngxjkcxlvhfdybhsjkdnhvkizsjvkgfnh gmjfn,s v ej ghlas gkjashdgosfjkdnfjkvgansdlkvndslkbn/jfldcnbvjkfdbknsjnbzsnThis dskfh sdkf kds nkfsdkfd gefng;sflkdgkfld g;sfdbefglksfd giesfdsgkfndj gfns.dgjfndgjksfndg.lesfkndgifd gnjesfd gjkasfn;dg esfngjksfjlkgnfdkgnsfxjkgnesfndg;ouesrgourje zgero;gerug horegrefgi e rgkj fjgksfndgjkf ndkjg fndkdsfwgfsdgefgkdrxngjsfdgsfndgknfsdjgsjrdfngjkcxkvsfxkcgnkdngxjkcxlvhfdybhsjkdnhvkizsjvkgfnh gmjfn,s v ej ghlas gkjashdgosfjkdnfjkvgansdlkvndslkbn/jfldcnbvjkfdbknsjnbzsn...",
+    description: "This is a blog about how crypto is transforming the future. This dskfh sdkf kds nkfsdkfd gefng;sflkdgkfld g;sfdbefglksfd giesfdsgkfndj gfns.dgjfndgjksfndg.lesfkndgifd gnjesfd gjkasfn;dg esfngjksfjlkgnfdkgnsfxjkgnesfndg;ouesrgourje zgero;gerug horegrefgi e rgkj fjgksfndgjkf ndkjg fndkdsfwgfsdgefgkdrxngjsfdgsfndgknfsdjgsjrdfngjkcxkvsfxkcgnkdngxjkcxlvhfdybhsjkdnhvkizsjvkgfnh gmjfn,s v ej ghlas gkjashdgosfjkdnfjkvgansdlkvndslkbn/jfldcnbvjkfdbknsjnbzsnThis dskfh sdkf kds nkfsdkfd gefng;sflkdgkfld g;sfdbefglksfd giesfdsgkfndj gfns.dgjfndgjksfndg.lesfkndgifd gnjesfd gjkasfn;dg esfngjksfjlkgnfdkgnsfxjkgnesfndg;ouesrgourje zgero;gerug horegrefgi e rgkj fjgksfndgjkf ndkjg fndkdsfwgfsdgefgkdrxngjsfdgsfndgknfsdjgsjrdfngjkcxkvsfxkcgnkdngxjkcxlvhfdybhsjkdnhvkizsjvkgfnh gmjfn,s v ej ghlas gkjashdgosfjkdnfjkvgansdlkvndslkbn/jfldcnbvjkfdbknsjnbzsnThis dskfh sdkf kds nkfsdkfd gefng;sflkdgkfld g;sfdbefglksfd giesfdsgkfndj gfns.dgjfndgjksfndg.lesfkndgifd gnjesfd gjkasfn;dg esfngjksfjlkgnfdkgnsfxjkgnesfndg;ouesrgourje zgero;gerug horegrefgi e rgkj fjgksfndgjkf ndkjg fndkdsfwgfsdgefgkdrxngjsfdgsfndgknfsdjgsjrdfngjkcxkvsfxkcgnkdngxjkcxlvhfdybhsjkdnhvkizsjvkgfnh gmjfn,s v ej ghlas gkjashdgosfjkdnfjkvgansdlkvndslkbn/jfldcnbvjkfdbknsjnbzsn...",
     author: "bitcoinowner@blog.com",
     createdAt: "2025-06-06T10:00:00Z",
-   tags:['crypto'],
+    tags:['crypto'],
     image: "https://images.pexels.com/photos/730547/pexels-photo-730547.jpeg"
   },
   {
@@ -21,7 +25,6 @@ import { Button } from "@/components/ui/button";
     tags:["health"],
     image: "https://images.pexels.com/photos/6648545/pexels-photo-6648545.jpeg"
   },
-  
   {
     _id: "3",
     title: "Bhakti",
@@ -66,72 +69,106 @@ import { Button } from "@/components/ui/button";
     tags:["startup"],
     image: "https://images.pexels.com/photos/7376/startup-photos.jpg"
   }
-  
 ];
 
 
 const BlogVisit = () => {
-    const { id } = useParams();  // get ID from URL
-    const blog = dummyBlogs.find(blog => blog._id === id); //Find that blog
-    
-    if (!blog) return <div className="text-center mt-20">Blog not found</div>;
+  const { id } = useParams();
+  const blog = dummyBlogs.find(blog => blog._id === id);
 
-   return (
-    <div className="min-h-screen bg-[#fffdf6] py-10 px-5">
+  if (!blog) return <div className="text-center mt-20 text-lg font-medium text-gray-600">Blog not found. Please check the URL.</div>;
 
-    <div className="max-w-3xl mx-auto px-4 py-8 ">
-       
-      <div className='text-center mb-6 space-y-6'> 
+  const dummyComments = [
+    { id: "c1", author: "Priya Sharma", text: "Great insights on crypto! Loved reading this.", date: "July 12, 2025" },
+    { id: "c2", author: "Rajesh Kumar", text: "Very helpful for beginners. Thanks for sharing!", date: "July 10, 2025" },
+  ];
+
+  return (
+    // Changed bg-[#fffdf6] to bg-white for a completely white page background
+    <div className="min-h-screen bg-white py-10 px-5"> 
+      {/* Removed bg-white, shadow-lg, rounded-lg, overflow-hidden from this div.
+          Kept max-w-4xl mx-auto pb-8 for centered content with specific width. */}
+      <div className="max-w-4xl mx-auto pb-8"> 
         
-        <p className="text-xs font-semibold text-[rgb(255,107,0)] tracking-wide uppercase mb-5">
+        {/* Blog Header Section */}
+        <div className='text-center p-6 sm:p-8 space-y-3 border-b border-gray-100'>
+          <p className="text-xs font-semibold text-orange-600 tracking-wide uppercase">
             Published on {new Date(blog.createdAt).toLocaleDateString()}
-        </p>
+          </p>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+            {blog.title}
+          </h1>
+          <p className="text-sm font-medium text-orange-600 bg-orange-100 px-3 py-1 rounded-full inline-flex items-center gap-1 w-fit mx-auto">
+            <UserRound className="h-3.5 w-3.5" /> By {blog.authorName || blog.author || "Unknown"}
+          </p>
+        </div>
 
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-800">{blog.title}</h1>
+        {/* Blog Image */}
+        <img
+          src={blog.image}
+          alt={blog.title}
+          className="w-full max-w-4xl h-auto max-h-[50vh] object-cover" 
+        />
+
+        {/* Blog Description/Content */}
+        <div className='p-6 sm:p-8'>
+          <p className="text-gray-800 leading-relaxed whitespace-pre-line text-lg">{blog.description}</p>
+        </div>
         
-          <p className="text-sm font-semibold text-orange-500 bg-[rgb(255,211,179)] px-3 py-0.5 rounded-full inline-block mb-2 w-fit">By {blog.authorName || "Unknown"}</p>
+        {/* Comments Section */}
+        <div className="p-6 sm:p-8 pt-0">
+            <h2 className="text-xl font-bold text-gray-800 tracking-wide mb-6 flex items-center gap-2">
+                <MessageSquareText className="h-5 w-5 text-gray-600" /> Comments ({dummyComments.length})
+            </h2>
 
-      </div>
+            {/* List of Existing Comments */}
+            {dummyComments.length > 0 && (
+                <div className="mt-8 space-y-6">
+                    {dummyComments.map(comment => (
+                        <div key={comment.id} className="border-b pb-4 border-gray-100 last:border-b-0 last:pb-0">
+                            <p className="font-semibold text-gray-800">{comment.author}</p>
+                            <p className="text-sm text-gray-600 mb-2">{comment.text}</p>
+                            <div className="flex justify-between items-center text-xs text-gray-500">
+                                <span>{comment.date}</span>
+                                <Button variant="link" className="text-blue-500 hover:text-blue-600 p-0 h-auto">
+                                    <Reply className="h-3.5 w-3.5 mr-1" /> Reply
+                                </Button>
+                            </div>
+                            {/* Placeholder for Reply Form (will appear on click) */}
+                            {/* You'd manage state to show/hide this for a real reply feature */}
+                            {/* <div className="mt-4 pl-6 border-l border-gray-200">
+                                <Input placeholder="Your reply..." />
+                                <Button className="mt-2 text-xs">Submit Reply</Button>
+                            </div> */}
+                        </div>
+                    ))}
+                </div>
+            )}
 
-      <img src={blog.image} alt={blog.title} className="w-full h-64 object-cover rounded-t-md mb-5 " />
-
-      <div className='  px-5 py-10'>
-        <p className="text-black leading-relaxed whitespace-pre-line mb-5  break-words ">{blog.description}</p>
-      </div>
-      
-      <h1 className="text-lg font-semibold text-black tracking-wide  mb-6 ">
-            Comments(2)
-        </h1>
-
-        
-          <div className="mt-12 space-y-3" >
-            
-            <h1 className="text-lg font-semibold   text-black tracking-wide   ">
-                Add your comment
-             </h1>
-
-            <div className='space-y-6'>
-             <Input
-                type="text"
-                placeholder="Your name"
-                className="w-full sm:w-2/3 border-gray-300" />
-
-              <textarea
-              placeholder='Write your comment here'
-              className='w-full sm:w-2/3 border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-gray-400 '
-              rows={10}
-             />
-                  <div>
-                    <button
-                        className=" w-fit sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 mt rounded-lg transition" >
-                          Submit
-                        </button>
-                 </div>
-                
-            </div>
-              {/* Like Button (Optional) */}
-               {/* <BlogLike /> */}
-          </div>
+            {/* Add Your Comment Card */}
+            <Card className="shadow-sm border-gray-200 mt-8"> 
+                <CardHeader className="pb-3">
+                    <CardTitle className="text-lg font-semibold text-gray-800">Add your comment</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <Input
+                        type="text"
+                        placeholder="Your name"
+                        className="w-full sm:w-2/3"
+                    />
+                    <textarea
+                        placeholder='Write your comment here'
+                        className='w-full border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-y min-h-[100px]'
+                        rows={5}
+                    />
+                    <Button
+                        className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md transition-colors"
+                    >
+                        Submit
+                    </Button>
+                </CardContent>
+            </Card>
+        </div>
       </div>
     </div>
   );
