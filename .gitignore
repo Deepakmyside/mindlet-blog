@@ -63,7 +63,6 @@ test-results/
 cypress/screenshots/
 cypress/videos/
 
-# lock files
 # yarn.lock
 # package-lock.json
 # pnpm-lock.yaml
