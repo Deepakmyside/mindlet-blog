@@ -1,43 +1,77 @@
-import React from 'react'
+import React, { useEffect } from 'react';
+import { Toaster } from "@/components/ui/toaster"; // <-- Yeh line import karein
 import Layout from "./components/Layout";
-import {BrowserRouter, Route, Routes } from 'react-router-dom'
-import Home from './pages/Home'
-import Navbar from './components/Navbar'
-import Login from './pages/Login'
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
+import Login from './pages/Login';
 import Signup from './pages/Signup';
-import BlogCard from './components/BlogCard';
-import MyBlogs from './pages/MyBlogs';
 import BlogVisit from './pages/BlogVisit';
 import Admin from "./pages/Admin";
-import AddBlog from "./pages/AddBlog"; // 👈 import
+import MyBlogs from './pages/MyBlogs';
+import AddBlog from "./pages/AddBlog";
+
+import { Provider } from 'react-redux';
+import store from './redux/store';
+import { loadUserFromStorage } from './redux/slices/authSlice';
+
+import ProtectedRoute from './components/ProtectedRoute';
 
 
 
-
-const App = () => {
+const AppContent = () => {
+  useEffect(() => {
+    store.dispatch(loadUserFromStorage());
+  }, []);
 
   return (
-      
-     <div className="min-h-screen bg-background text-foreground">
-      
+    <div className="min-h-screen bg-background text-foreground">
       <Layout>
-      <Routes>
-        <Route path='/' element={<Home/>} />
-        <Route path='/login' element={<Login/>} />
-        <Route path='/signup' element={<Signup/>} />
-        <Route path='/blog/:id' element={<BlogVisit/>} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/myblogs" element={<MyBlogs />} />
-        <Route path="/add" element={<AddBlog />} />
+        <Routes>
+          <Route path='/' element={<Home/>} />
+          <Route path='/login' element={<Login/>} />
+          <Route path='/signup' element={<Signup/>} />
+          <Route path='/blog/:id' element={<BlogVisit/>} />
 
-
-      </Routes>
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/myblogs"
+            element={
+              <ProtectedRoute>
+                <MyBlogs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add"
+            element={
+              <ProtectedRoute>
+                <AddBlog />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+         <Toaster /> 
       </Layout>
-      
+     {/* <-- Yeh component yahan render karein */}
     </div>
-    
-    
-  )
-}
+  );
+};
 
-export default App
+const App = () => {
+  return (
+    <Provider store={store}>
+      
+        <AppContent />
+
+    </Provider>
+  );
+};
+
+export default App;

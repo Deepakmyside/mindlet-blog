@@ -1,12 +1,14 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { setLoginModalOpen } from '../redux/slices/authSlice';
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarDays, UserRound, MessageSquareText, Reply } from "lucide-react";
+import { CalendarDays, UserRound, MessageSquareText, Reply, Heart } from "lucide-react";
 
 const dummyBlogs = [
-  // ... (dummyBlogs array remains the same as previous code)
   {
     _id: "1",
     title: "Crypto is Booming",
@@ -14,7 +16,8 @@ const dummyBlogs = [
     author: "bitcoinowner@blog.com",
     createdAt: "2025-06-06T10:00:00Z",
     tags:['crypto'],
-    image: "https://images.pexels.com/photos/730547/pexels-photo-730547.jpeg"
+    image: "https://images.pexels.com/photos/730547/pexels-photo-730547.jpeg",
+    likes: 245
   },
   {
     _id: "2",
@@ -26,55 +29,77 @@ const dummyBlogs = [
     image: "https://images.pexels.com/photos/6648545/pexels-photo-6648545.jpeg"
   },
   {
-    _id: "3",
-    title: "Bhakti",
-    description: "Bhakti is the ultimate key to achieve happiness satisfaction in life...",
-    author: "healthguide@blog.com",
-    createdAt: "2025-07-05T10:00:00Z",
-    tags:["bhakti"],
-    image: "https://images.pexels.com/photos/32924881/pexels-photo-32924881.jpeg"
-  },
-  {
-    _id: "4",
-    title: "Startup Culture",
-    description: "The startup culture is evolving rapidly, with new trends emerging every day...",
-    author: "healthguide@blog.com",
-    createdAt: "2025-07-05T10:00:00Z",
-    tags:["startup"],
-    image: "https://images.pexels.com/photos/3194521/pexels-photo-3194521.jpeg"
-  },
-  {
-    _id: "5",
-    title: "Finance",
-    description: "Finance is the backbone of any economy, driving growth and innovation...",
-    createdAt: "2025-07-05T10:00:00Z",
-    tags:["finance"],
-    image: "https://images.pexels.com/photos/5466785/pexels-photo-5466785.jpeg"
-  },
-  {
-    _id: "6",
-    title: "Dance",
-    description: "Dance is a form of expression that transcends boundaries and cultures...",
+    _id: "2",
+    title: "Meditation Benefits",
+    description: "Meditation can help with peace, clarity and healing...",
     author: "healthguide@blog.com",
     createdAt: "2025-07-05T10:00:00Z",
     tags:["health"],
-    image: "https://images.pexels.com/photos/1701202/pexels-photo-1701202.jpeg"
+    image: "https://images.pexels.com/photos/6648545/pexels-photo-6648545.jpeg"
   },
   {
-    _id: "7",
-    title: "Startup Culture",
-    description: "India is the new startup hub of the world, with a vibrant ecosystem...",
-    author: "startupindian@blog.com",
+    _id: "2",
+    title: "Meditation Benefits",
+    description: "Meditation can help with peace, clarity and healing...",
+    author: "healthguide@blog.com",
     createdAt: "2025-07-05T10:00:00Z",
-    tags:["startup"],
-    image: "https://images.pexels.com/photos/7376/startup-photos.jpg"
-  }
+    tags:["health"],
+    image: "https://images.pexels.com/photos/6648545/pexels-photo-6648545.jpeg"
+  },
+  {
+    _id: "2",
+    title: "Meditation Benefits",
+    description: "Meditation can help with peace, clarity and healing...",
+    author: "healthguide@blog.com",
+    createdAt: "2025-07-05T10:00:00Z",
+    tags:["health"],
+    image: "https://images.pexels.com/photos/6648545/pexels-photo-6648545.jpeg"
+  },
+  {
+    _id: "2",
+    title: "Meditation Benefits",
+    description: "Meditation can help with peace, clarity and healing...",
+    author: "healthguide@blog.com",
+    createdAt: "2025-07-05T10:00:00Z",
+    tags:["health"],
+    image: "https://images.pexels.com/photos/6648545/pexels-photo-6648545.jpeg"
+  },
+  {
+    _id: "2",
+    title: "Meditation Benefits",
+    description: "Meditation can help with peace, clarity and healing...",
+    author: "healthguide@blog.com",
+    createdAt: "2025-07-05T10:00:00Z",
+    tags:["health"],
+    image: "https://images.pexels.com/photos/6648545/pexels-photo-6648545.jpeg"
+  },
+  {
+    _id: "2",
+    title: "Meditation Benefits",
+    description: "Meditation can help with peace, clarity and healing...",
+    author: "healthguide@blog.com",
+    createdAt: "2025-07-05T10:00:00Z",
+    tags:["health"],
+    image: "https://images.pexels.com/photos/6648545/pexels-photo-6648545.jpeg"
+  },
+  {
+    _id: "2",
+    title: "Meditation Benefits",
+    description: "Meditation can help with peace, clarity and healing...",
+    author: "healthguide@blog.com",
+    createdAt: "2025-07-05T10:00:00Z",
+    tags:["health"],
+    image: "https://images.pexels.com/photos/6648545/pexels-photo-6648545.jpeg"
+  },
 ];
 
 
 const BlogVisit = () => {
   const { id } = useParams();
   const blog = dummyBlogs.find(blog => blog._id === id);
+
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const dispatch = useDispatch();
 
   if (!blog) return <div className="text-center mt-20 text-lg font-medium text-gray-600">Blog not found. Please check the URL.</div>;
 
@@ -83,14 +108,29 @@ const BlogVisit = () => {
     { id: "c2", author: "Rajesh Kumar", text: "Very helpful for beginners. Thanks for sharing!", date: "July 10, 2025" },
   ];
 
+  const handleLikeClick = () => {
+    if (!isLoggedIn) {
+      console.log("User not logged in, opening login modal.");
+      dispatch(openLoginModal());
+    } else {
+      console.log(`User is logged in, liking blog: ${blog.title}`);
+    }
+  };
+
+  const handleCommentSubmit = (e) => {
+    e.preventDefault();
+    if (!isLoggedIn) {
+      console.log("Cannot submit comment, user not logged in. Opening login modal.");
+      dispatch(openLoginModal());
+    } else {
+      console.log("User is logged in. Submitting comment...");
+    }
+  };
+
   return (
-    // Changed bg-[#fffdf6] to bg-white for a completely white page background
-    <div className="min-h-screen bg-white py-10 px-5"> 
-      {/* Removed bg-white, shadow-lg, rounded-lg, overflow-hidden from this div.
-          Kept max-w-4xl mx-auto pb-8 for centered content with specific width. */}
-      <div className="max-w-4xl mx-auto pb-8"> 
-        
-        {/* Blog Header Section */}
+    <div className="min-h-screen bg-white py-10 px-5">
+      <div className="max-w-4xl mx-auto pb-8">
+
         <div className='text-center p-6 sm:p-8 space-y-3 border-b border-gray-100'>
           <p className="text-xs font-semibold text-orange-600 tracking-wide uppercase">
             Published on {new Date(blog.createdAt).toLocaleDateString()}
@@ -103,25 +143,32 @@ const BlogVisit = () => {
           </p>
         </div>
 
-        {/* Blog Image */}
         <img
           src={blog.image}
           alt={blog.title}
-          className="w-full max-w-4xl h-auto max-h-[50vh] object-cover" 
+          className="w-full max-w-4xl h-auto max-h-[50vh] object-cover"
         />
 
-        {/* Blog Description/Content */}
         <div className='p-6 sm:p-8'>
           <p className="text-gray-800 leading-relaxed whitespace-pre-line text-lg">{blog.description}</p>
         </div>
-        
-        {/* Comments Section */}
+
+        <div className="p-6 sm:p-8 pt-0 flex justify-end">
+            <button
+              onClick={handleLikeClick}
+              className="flex items-center text-gray-600 hover:text-red-500 transition duration-200 p-2 rounded-md hover:bg-gray-50"
+              aria-label={`Like this blog. Current likes: ${blog.likes || 0}`}
+            >
+              <Heart className="w-6 h-6" />
+              <span className="ml-2 text-lg font-semibold">{blog.likes || 0}</span>
+            </button>
+        </div>
+
         <div className="p-6 sm:p-8 pt-0">
             <h2 className="text-xl font-bold text-gray-800 tracking-wide mb-6 flex items-center gap-2">
                 <MessageSquareText className="h-5 w-5 text-gray-600" /> Comments ({dummyComments.length})
             </h2>
 
-            {/* List of Existing Comments */}
             {dummyComments.length > 0 && (
                 <div className="mt-8 space-y-6">
                     {dummyComments.map(comment => (
@@ -134,40 +181,58 @@ const BlogVisit = () => {
                                     <Reply className="h-3.5 w-3.5 mr-1" /> Reply
                                 </Button>
                             </div>
-                            {/* Placeholder for Reply Form (will appear on click) */}
-                            {/* You'd manage state to show/hide this for a real reply feature */}
-                            {/* <div className="mt-4 pl-6 border-l border-gray-200">
-                                <Input placeholder="Your reply..." />
-                                <Button className="mt-2 text-xs">Submit Reply</Button>
-                            </div> */}
                         </div>
                     ))}
                 </div>
             )}
 
-            {/* Add Your Comment Card */}
-            <Card className="shadow-sm border-gray-200 mt-8"> 
-                <CardHeader className="pb-3">
-                    <CardTitle className="text-lg font-semibold text-gray-800">Add your comment</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <Input
-                        type="text"
-                        placeholder="Your name"
-                        className="w-full sm:w-2/3"
-                    />
-                    <textarea
-                        placeholder='Write your comment here'
-                        className='w-full border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-y min-h-[100px]'
-                        rows={5}
-                    />
-                    <Button
-                        className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md transition-colors"
-                    >
-                        Submit
-                    </Button>
-                </CardContent>
-            </Card>
+            {isLoggedIn ? (
+              <Card className="shadow-sm border-gray-200 mt-8">
+                  <CardHeader className="pb-3">
+                      <CardTitle className="text-lg font-semibold text-gray-800">Add your comment</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                      <Input
+                          type="text"
+                          placeholder="Your name"
+                          className="w-full sm:w-2/3"
+                      />
+                      <textarea
+                          placeholder='Write your comment here'
+                          className='w-full border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-y min-h-[100px]'
+                          rows={5}
+                      />
+                      <Button
+                          onClick={handleCommentSubmit}
+                          className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md transition-colors"
+                      >
+                          Submit
+                      </Button>
+                  </CardContent>
+              </Card>
+            ) : (
+              <Card className="shadow-sm border-gray-200 mt-8 text-center p-6">
+                <CardTitle className="text-lg font-semibold text-gray-800 mb-3">
+                  Please Log In to Leave a Comment!
+                </CardTitle>
+                <p className="text-gray-600 mb-4">Join the discussion by signing in or creating an account.</p>
+                <div className="flex justify-center gap-4">
+                  <Button
+                    onClick={() => dispatch(openLoginModal())}
+                    className="bg-orange-500 hover:bg-orange-600 text-white"
+                  >
+                    Log In
+                  </Button>
+                  <Button
+                    onClick={() => dispatch(openLoginModal())}
+                    variant="outline"
+                    className="border-orange-500 text-orange-500 hover:bg-orange-50"
+                  >
+                    Sign Up
+                  </Button>
+                </div>
+              </Card>
+            )}
         </div>
       </div>
     </div>

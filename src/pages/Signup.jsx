@@ -1,66 +1,132 @@
 import React from "react";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Link, useNavigate } from "react-router-dom";
+import { Card, CardContent, CardHeader } from "@/components/ui/card"; // Removed CardHeader
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import { Label } from "@/components/ui/label";
-import { FcGoogle } from "react-icons/fc";
-import Navbar from "../components/Navbar";
+import { Input } from "@/components/ui/input";
 
-const Signup = () => {
-  // 🔹 State for controlled inputs
+import { useDispatch, useSelector } from 'react-redux';
+import { signup, setLoginModalOpen } from '../redux/slices/authSlice'; // 'signupUser' changed to 'signup'
+import { useToast } from "@/components/ui/use-toast";
+
+const Signup = ({ inModal = false }) => {
+  const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { toast } = useToast();
+
+  const { loading, error, isLoggedIn, hasCheckedAuth } = useSelector((state) => state.auth);
+
+  React.useEffect(() => {
+    if (!inModal && hasCheckedAuth && isLoggedIn) {
+      navigate('/');
+    }
+  }, [inModal, hasCheckedAuth, isLoggedIn, navigate]);
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    if (!name || !email || !password) {
+      toast({
+        title: "Input Error",
+        description: "Please fill in all fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (!email.endsWith("@gmail.com")) {
+      toast({
+        title: "Invalid Email",
+        description: "Email must be a Gmail address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const resultAction = await dispatch(signup({ name, email, password })); // 'signupUser' changed to 'signup'
+
+    if (signup.fulfilled.match(resultAction)) { // 'signupUser.fulfilled' changed to 'signup.fulfilled'
+      toast({
+        title: "Signup Successful!",
+        description: "Your account has been created. Welcome!",
+      });
+      if (inModal) {
+        dispatch(setLoginModalOpen(false)); // Close modal on successful signup
+      }
+    } else if (signup.rejected.match(resultAction)) { // 'signupUser.rejected' changed to 'signup.rejected'
+      const errorMessage = resultAction.payload || error || "Signup failed. Please try again.";
+      toast({
+        title: "Signup Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-[#fffdf6]">
-      <Card className="w-full max-w-md p-6 space-y-4 bg-gray-50 shadow-lg rounded-xl">
-        {/* Header */}
-        <CardHeader className="flex justify-between items-center p-0">
-          <h2 className="text-xl font-semibold">Signup now</h2>
-          <Link to="/login" className="text-sm text-blue-500 hover:underline">
-            Login into existing account
-          </Link>
-        </CardHeader>
+    <div className={inModal ? "p-6 pt-0" : "min-h-screen flex items-center justify-center px-4 bg-[#fffdf6]"}>
+      <Card className={inModal ? "w-full shadow-none border-none" : "w-full max-w-md p-6 space-y-4 bg-gray-50 shadow-lg rounded-xl"}>
+        {!inModal && (
+          <CardHeader className="flex justify-between items-center p-0">
+            <h2 className="text-xl font-semibold">Create your account</h2>
+            <Link to="/login" className="text-sm text-blue-500 hover:underline">
+              Login into existing account
+            </Link>
+          </CardHeader>
+        )}
 
-        {/* Form Content */}
-        <CardContent className="space-y-4 p-0 pt-4">
-          {/* Email */}
-          <div className="space-y-1">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email here"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="off"
-            />
-          </div>
+        <CardContent className={inModal ? "space-y-4 p-0" : "space-y-4 p-0 pt-4"}>
+          <form onSubmit={handleSignup} className="space-y-4" autoComplete="off">
+            <div className="space-y-1">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Full name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoComplete="name"
+                required
+              />
+            </div>
 
-          {/* Password */}
-          <div className="space-y-1">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="********"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="new-password"
-            />
-          </div>
+            <div className="space-y-1">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="off"
+                required
+              />
+            </div>
 
-          {/* Signup Button */}
-          <Button className="w-full bg-black text-white hover:bg-black/90">
-            Signup
-          </Button>
+            <div className="space-y-1">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="********"
+                autoComplete="new-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
 
-          {/* Google Signup */}
-          <Button variant="outline" className="w-full flex items-center justify-center gap-2">
-            <FcGoogle size={20} />
-            Continue with Google
-          </Button>
+            <Button type="submit" className="w-full bg-black text-white hover:bg-black/90" disabled={loading}>
+              {loading ? 'Signing Up...' : 'Signup'}
+            </Button>
+          </form>
+
+          {error && <p className="text-red-500 text-center text-sm">{error}</p>}
         </CardContent>
       </Card>
     </div>

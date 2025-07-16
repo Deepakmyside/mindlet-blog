@@ -14,7 +14,7 @@ const AnalyticsTab = () => {
   const totalComments = dummyBlogs.reduce((sum, blog) => sum + blog.comments, 0);
 
   return (
-    <div className="space-y-6 pt-10  ">
+    <div className="space-y-6 pt-10 ">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
         <div className="bg-white p-6 rounded shadow">

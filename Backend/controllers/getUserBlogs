@@ -1,0 +1,13 @@
+const Blog = require("../models/Blog");
+
+const getUserBlogs = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const blogs = await Blog.find({ author: userId }).sort({ createdAt: -1 });
+    res.status(200).json({ blogs });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch user's blogs", error: error.message });
+  }
+};
+
+module.exports = { getUserBlogs };

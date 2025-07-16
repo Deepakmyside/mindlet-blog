@@ -1,53 +1,95 @@
-import React, { useState, useCallback } from "react"; // useCallback added for memoizing handleDrop
+import React, { useState, useCallback } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+// UI Components
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Import Tabs components
-import { ImageIcon, Upload, Link } from "lucide-react"; // Import Icons
-import  Editor  from '../components/Editor'; // Your Rich Text Editor component
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { ImageIcon, Upload, Sparkles } from "lucide-react";
+
+import generateBlogContentWithAI from "../services/aiService";
 
 const AddBlog = () => {
+  const navigate = useNavigate();
+  const userToken =
+    useSelector((state) => state.auth.userToken) ||
+    localStorage.getItem("userToken");
+
   const [blogData, setBlogData] = useState({
     title: "",
     description: "",
     tags: "",
-    image: null, // Can be a File object or a URL string
+    image: null,
     author: "me@mindlet.com",
   });
 
-  const [imagePreviewUrl, setImagePreviewUrl] = useState(null); // To show image thumbnail
-  const [isDialogOpen, setIsDialogOpen] = useState(false); // To control dialog open/close
-  const [imageTab, setImageTab] = useState("upload"); // State for active image selection tab
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [authMessage, setAuthMessage] = useState(null);
+  const [aiStatusMessage, setAiStatusMessage] = useState(null);
+  const [publishStatusMessage, setPublishStatusMessage] = useState(null);
+
+  if (!userToken) {
+    setAuthMessage({
+      type: "error",
+      text: "Please log in to publish a blog. Redirecting to login...",
+    });
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 2000);
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
+        <Card className="w-full max-w-md shadow-lg p-6 text-center">
+          <CardTitle className="text-2xl font-bold text-red-600 mb-4">
+            Access Denied
+          </CardTitle>
+          <CardDescription className="text-gray-700">
+            {authMessage?.text || "You must be logged in to add a new blog."}
+          </CardDescription>
+          <Button
+            onClick={() => (window.location.href = "/login")}
+            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            Go to Login
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
   const handleChange = (e) => {
-    setBlogData({
-      ...blogData,
-      [e.target.name]: e.target.value,
-    });
+    setBlogData({ ...blogData, [e.target.name]: e.target.value });
+    setAiStatusMessage(null);
+    setPublishStatusMessage(null);
   };
 
-  const handleDescriptionChange = (newContent) => {
-    setBlogData((prev) => ({
-      ...prev,
-      description: newContent,
-    }));
-  };
-
-  // Handler for file input (Upload from Computer)
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setBlogData((prev) => ({
-        ...prev,
-        image: file, // Store the File object
-      }));
+      setBlogData((prev) => ({ ...prev, image: file }));
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreviewUrl(reader.result);
-      };
+      reader.onloadend = () => setImagePreviewUrl(reader.result);
       reader.readAsDataURL(file);
     } else {
       setBlogData((prev) => ({ ...prev, image: null }));
@@ -55,196 +97,312 @@ const AddBlog = () => {
     }
   };
 
-  // Handler for URL input (Use Image URL)
-  const handleImageUrlChange = (e) => {
-    const url = e.target.value;
-    setBlogData((prev) => ({
-      ...prev,
-      image: url, // Store the URL string
-    }));
-    setImagePreviewUrl(url); // Directly use URL for preview
-  };
-
-  // Optional: Drag and Drop handler
   const handleDrop = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-        handleFileChange({ target: { files: [file] } });
+    if (file?.type?.startsWith("image/")) {
+      handleFileChange({ target: { files: [file] } });
     }
-  }, [handleFileChange]);
+  }, []);
 
   const handleDragOver = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleGenerateWithAI = async () => {
+    setAiStatusMessage(null);
+    setAiLoading(true);
 
-    let finalImageUrl = null;
-
-    if (blogData.image) {
-      if (blogData.image instanceof File) {
-        console.log("Image selected for upload:", blogData.image.name);
-        // 🚨 FRONTEND UI ONLY: This is where you'd integrate ImageKit.io SDK for client-side upload
-        // Or send the file to your backend for server-side upload to ImageKit.io
-        // For UI purposes, we're just logging.
-        // Example with placeholder for ImageKit.io client-side (requires SDK setup & auth endpoint):
-        /*
-        try {
-            const uploadedResponse = await uploadImageToImageKit(blogData.image); // Your ImageKit.io upload function
-            finalImageUrl = uploadedResponse.url; // Get URL after successful upload
-            console.log("Image uploaded to ImageKit.io:", finalImageUrl);
-        } catch (error) {
-            console.error("Image upload failed:", error);
-            alert("Image upload failed. Please try again.");
-            return; // Prevent form submission if image upload fails
-        }
-        */
-        // For now, let's just use a placeholder URL for demonstration
-        finalImageUrl = "https://via.placeholder.com/150/0000FF/FFFFFF?text=Uploaded_Image";
-      } else if (typeof blogData.image === 'string' && blogData.image.startsWith('http')) {
-        finalImageUrl = blogData.image; // It's already a URL
-        console.log("Image URL provided:", finalImageUrl);
-      }
+    if (!blogData.title.trim()) {
+      setAiStatusMessage({
+        type: "error",
+        text: "Please enter a blog title before generating with AI.",
+      });
+      setAiLoading(false);
+      return;
     }
 
-    const finalBlogData = {
-      ...blogData,
-      image: finalImageUrl, // Update image with the final URL
-    };
+    try {
+      const generatedContent = await generateBlogContentWithAI(
+        blogData.title,
+        blogData.description
+      );
+      setBlogData((prevData) => ({
+        ...prevData,
+        description: generatedContent,
+      }));
+      setAiStatusMessage({
+        type: "success",
+        text: "Blog content generated by AI successfully!",
+      });
+    } catch (error) {
+      console.error("Frontend Error generating AI content:", error.message);
+      setAiStatusMessage({
+        type: "error",
+        text: error.message || "An error occurred during AI generation.",
+      });
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
-    console.log("Submitted blog data:", finalBlogData);
-    // 🔜 Here you'll add your backend API call to save finalBlogData
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setPublishStatusMessage(null);
+    setLoading(true);
+
+    if (!userToken) {
+      setPublishStatusMessage({
+        type: "error",
+        text: "Session expired. Please log in again.",
+      });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("title", blogData.title);
+      formData.append("description", blogData.description);
+      formData.append("tags", blogData.tags);
+      formData.append("author", blogData.author);
+      if (blogData.image) {
+        formData.append("image", blogData.image);
+      }
+
+      const response = await axios.post(
+        "http://localhost:5000/api/blog",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+
+      setPublishStatusMessage({
+        type: "success",
+        text: response.data.message || "Blog published successfully!",
+      });
+
+      setBlogData({
+        title: "",
+        description: "",
+        tags: "",
+        image: null,
+        author: "me@mindlet.com",
+      });
+
+      setImagePreviewUrl(null);
+      setIsDialogOpen(false);
+      setAiStatusMessage(null);
+      navigate("/admin");
+    } catch (error) {
+      console.error("Error publishing blog:", error);
+      setPublishStatusMessage({
+        type: "error",
+        text:
+          error.response?.data?.message ||
+          "An unexpected error occurred while publishing.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
       <Card className="w-full max-w-4xl shadow-lg">
         <CardHeader>
-          <CardTitle className="text-3xl font-extrabold text-gray-900">✍️ Add New Blog </CardTitle>
+          <CardTitle className="text-3xl font-extrabold text-gray-900">
+            ✍️ Add New Blog
+          </CardTitle>
           <CardDescription className="text-md text-gray-600">
             Craft your compelling story and share it with the world.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {publishStatusMessage && (
+              <div
+                className={`p-3 rounded-md text-center font-medium ${
+                  publishStatusMessage.type === "success"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
+                {publishStatusMessage.text}
+              </div>
+            )}
+
             <div>
-              <Label htmlFor="title" className="mb-2 block text-gray-700 font-semibold">Blog Title</Label>
+              <Label htmlFor="title" className="mb-2 block text-gray-700 font-semibold">
+                Blog Title
+              </Label>
               <Input
                 id="title"
                 name="title"
                 placeholder="Enter a captivating title for your blog"
                 value={blogData.title}
                 onChange={handleChange}
-                className="w-full"
+                required
               />
             </div>
 
             <div>
-              <Label htmlFor="description" className="mb-2 block text-gray-700 font-semibold">Blog Content</Label>
-              <Editor content={blogData.description} onContentChange={handleDescriptionChange} />
+              <Label htmlFor="description" className="mb-2 block text-gray-700 font-semibold">
+                Blog Content
+              </Label>
+              <Textarea
+                id="description"
+                name="description"
+                placeholder="Write your blog content here..."
+                value={blogData.description}
+                onChange={handleChange}
+                rows={10}
+                className="resize-y"
+                required
+                disabled={aiLoading}
+              />
             </div>
 
+            {aiStatusMessage && (
+              <div
+                className={`p-2 rounded-md text-center text-sm font-medium ${
+                  aiStatusMessage.type === "success"
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
+                {aiStatusMessage.text}
+              </div>
+            )}
+
+            <Button
+              type="button"
+              onClick={handleGenerateWithAI}
+              className="w-full bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center gap-2 mt-4"
+              disabled={aiLoading || loading}
+            >
+              {aiLoading ? (
+                <>
+                  <Sparkles className="h-5 w-5 animate-pulse" /> Generating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-5 w-5" /> Generate with AI
+                </>
+              )}
+            </Button>
+
             <div>
-              <Label htmlFor="tags" className="mb-2 block text-gray-700 font-semibold">Tags</Label>
+              <Label htmlFor="tags" className="mb-2 block text-gray-700 font-semibold">
+                Tags
+              </Label>
               <Input
                 id="tags"
                 name="tags"
-                placeholder="e.g., Finance, Health, Technology, Travel (comma-separated)"
+                placeholder="e.g., Finance, Health, Technology, Travel"
                 value={blogData.tags}
                 onChange={handleChange}
               />
             </div>
 
-            {/* --- Professional Image Selection Section --- */}
             <div>
               <Label className="mb-2 block text-gray-700 font-semibold">Featured Image</Label>
               <div className="flex items-center space-x-4 mb-3">
                 {imagePreviewUrl && (
-                  <img src={imagePreviewUrl} alt="Image Preview" className="w-24 h-24 object-cover rounded-md border border-gray-200" />
+                  <img
+                    src={imagePreviewUrl}
+                    alt="Preview"
+                    className="w-24 h-24 object-cover rounded-md border border-gray-200"
+                  />
                 )}
+
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button type="button" variant="outline" className="flex items-center gap-2">
-                      <ImageIcon className="h-4 w-4" /> {imagePreviewUrl ? "Change Image" : "Select Image"}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="flex items-center gap-2"
+                    >
+                      <ImageIcon className="h-4 w-4" />
+                      {imagePreviewUrl ? "Change Image" : "Select Image"}
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[550px]"> {/* Increased dialog width */}
+                  <DialogContent className="sm:max-w-[550px]">
                     <DialogHeader>
-                      <DialogTitle>Select Featured Image</DialogTitle>
+                      <DialogTitle>Upload Featured Image</DialogTitle>
                       <DialogDescription>
-                        Choose to upload from your computer or provide an image URL.
+                        Upload an image from your computer.
                       </DialogDescription>
                     </DialogHeader>
-                    <Tabs value={imageTab} onValueChange={setImageTab} className="w-full mt-4">
-                      <TabsList className="grid w-full grid-cols-2"> {/* Two tabs */}
-                        <TabsTrigger value="upload" className="flex items-center gap-2"><Upload className="h-4 w-4" /> Upload</TabsTrigger>
-                        <TabsTrigger value="url" className="flex items-center gap-2"><Link className="h-4 w-4" /> From URL</TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="upload" className="p-4 border border-t-0 rounded-b-md">
-                        <div
-                            onDrop={handleDrop}
-                            onDragOver={handleDragOver}
-                            className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
-                        >
-                            <Upload className="h-8 w-8 mb-2" />
-                            <p className="text-sm font-medium mb-1">Drag & drop an image here, or</p>
-                            <Input
-                                id="image-upload"
-                                type="file"
-                                accept="image/*"
-                                onChange={handleFileChange}
-                                className="sr-only" // Hide default file input
-                            />
-                            <Label htmlFor="image-upload" className="cursor-pointer text-blue-600 hover:underline">
-                                Click to browse
-                            </Label>
-                        </div>
-                        {imagePreviewUrl && blogData.image instanceof File && (
-                          <div className="mt-4 text-center">
-                            <img src={imagePreviewUrl} alt="Selected Image Preview" className="max-w-full h-auto max-h-[200px] object-contain mx-auto rounded-md border border-gray-200" />
-                            <p className="text-sm text-gray-500 mt-1 truncate">{blogData.image?.name || 'Selected File'}</p>
-                          </div>
-                        )}
-                        {!imagePreviewUrl && <p className="text-center text-sm text-gray-500 mt-4">No image selected for upload.</p>}
-                      </TabsContent>
-                      <TabsContent value="url" className="p-4 border border-t-0 rounded-b-md">
-                        <Label htmlFor="image-url-input" className="mb-2 block text-gray-700 font-semibold">Image URL</Label>
-                        <Input
-                          id="image-url-input"
-                          name="imageUrlInput" // Dummy name for this input, actual state handled by handleImageUrlChange
-                          placeholder="Paste image URL here (e.g., https://example.com/image.jpg)"
-                          value={typeof blogData.image === 'string' ? blogData.image : ''} // Display current URL if it's a string
-                          onChange={handleImageUrlChange}
-                          className="w-full"
+
+                    <div
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                      className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
+                    >
+                      <Upload className="h-8 w-8 mb-2" />
+                      <p className="text-sm font-medium mb-1">
+                        Drag & drop an image here, or
+                      </p>
+                      <Input
+                        id="image-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="sr-only"
+                      />
+                      <Label
+                        htmlFor="image-upload"
+                        className="cursor-pointer text-blue-600 hover:underline"
+                      >
+                        Click to browse
+                      </Label>
+                    </div>
+
+                    {imagePreviewUrl && blogData.image instanceof File && (
+                      <div className="mt-4 text-center">
+                        <img
+                          src={imagePreviewUrl}
+                          alt="Selected Preview"
+                          className="max-w-full h-auto max-h-[200px] object-contain mx-auto rounded-md border border-gray-200"
                         />
-                        {imagePreviewUrl && typeof blogData.image === 'string' && blogData.image.startsWith('http') && (
-                          <div className="mt-4 text-center">
-                            <img src={imagePreviewUrl} alt="URL Image Preview" className="max-w-full h-auto max-h-[200px] object-contain mx-auto rounded-md border border-gray-200" />
-                            <p className="text-sm text-gray-500 mt-1 truncate">{blogData.image}</p>
-                          </div>
-                        )}
-                        {!imagePreviewUrl && <p className="text-center text-sm text-gray-500 mt-4">No image URL provided.</p>}
-                      </TabsContent>
-                    </Tabs>
+                        <p className="text-sm text-gray-500 mt-1 truncate">
+                          {blogData.image?.name || "Selected File"}
+                        </p>
+                      </div>
+                    )}
+
+                    {!imagePreviewUrl && (
+                      <p className="text-center text-sm text-gray-500 mt-4">
+                        No image selected for upload.
+                      </p>
+                    )}
+
                     <DialogFooter>
-                      <Button type="button" onClick={() => setIsDialogOpen(false)}>Done</Button>
+                      <Button type="button" onClick={() => setIsDialogOpen(false)}>
+                        Done
+                      </Button>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
               </div>
             </div>
-            {/* --- End Professional Image Selection Section --- */}
 
             <div className="flex justify-end gap-4 pt-4">
-              <Button type="button" variant="outline" className="px-6 py-2 text-gray-700 border-gray-300 hover:bg-gray-100">
+              <Button type="button" variant="outline">
                 Save as Draft
               </Button>
-              <Button type="submit" className="px-6 py-2 bg-orange-500  hover:bg-orange-600 text-white font-semibold">
-                ✨ Publish Blog
+              <Button
+                type="submit"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold"
+                disabled={loading || aiLoading}
+              >
+                {loading ? "Publishing..." : "✨ Publish Blog"}
               </Button>
             </div>
           </form>

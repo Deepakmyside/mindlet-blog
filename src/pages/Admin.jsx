@@ -3,7 +3,7 @@ import AdminSidebar from "@/components/AdminSidebar";
 import AdminContent from "@/components/AdminContent";
 
 const Admin = () => {
-  const [activeTab, setActiveTab] = useState("add");
+  const [activeTab, setActiveTab] = useState("my");
 
   return (
    
