@@ -1,24 +1,69 @@
-# Logs
+# ======================
+# Node.js / Express
+# ======================
+
+node_modules/
+.env
+.env.local
+.env.*.local
+
+# log files
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# OS generated
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
+
+# crash dumps
+*.pid
+*.seed
+*.pid.lock
+
+# coverage reports
+coverage/
+*.lcov
+
+# compiled output
+dist/
+build/
+tmp/
+temp/
+
+# vscode settings (optional)
+.vscode/
+
+# ======================
+# React / Frontend
+# ======================
+
+# React production build
+/build
+/.cache
+
+# misc
+*.tgz
+.parcel-cache/
+.cache/
+.next/
+out/
+
+# IDEs / editors
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# testing
+jest.config.js
+test-results/
+cypress/screenshots/
+cypress/videos/
+
+# lock files
+# yarn.lock
+# package-lock.json
+# pnpm-lock.yaml
