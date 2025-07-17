@@ -17,6 +17,9 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use('/api/ai', aiRoutes);
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ message: 'MindletBlog backend is live' });
+});
 
 
 app.get("/", (req, res) => {
