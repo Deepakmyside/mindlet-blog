@@ -167,13 +167,13 @@ const AddBlog = () => {
       formData.append("title", blogData.title);
       formData.append("description", blogData.description);
       formData.append("tags", blogData.tags);
-      formData.append("author", blogData.author);
+      
       if (blogData.image) {
         formData.append("image", blogData.image);
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/blog",
+        "http://localhost:5000/api/blogs",
         formData,
         {
           headers: {

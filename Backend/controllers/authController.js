@@ -32,8 +32,8 @@ exports.signup = async (req, res) => {
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
-      { expiresIn: '30d' },
-      (err, token) => {
+      { expiresIn: '30d' },// We will Implement Refresh Token concept in futyure for more user convenience(long sessions) and security purpose
+       (err, token) => {
         if (err) throw err;
         res.status(201).json({ message: 'User signed up successfully', token });
       }

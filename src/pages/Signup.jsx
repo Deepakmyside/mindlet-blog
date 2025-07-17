@@ -1,27 +1,28 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader } from "@/components/ui/card"; // Removed CardHeader
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-
-import { useDispatch, useSelector } from 'react-redux';
-import { signup, setLoginModalOpen } from '../redux/slices/authSlice'; // 'signupUser' changed to 'signup'
+import { useDispatch, useSelector } from "react-redux";
+import { signup, setLoginModalOpen } from "../redux/slices/authSlice";
 import { useToast } from "@/components/ui/use-toast";
 
 const Signup = ({ inModal = false }) => {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { toast } = useToast();
-
-  const { loading, error, isLoggedIn, hasCheckedAuth } = useSelector((state) => state.auth);
+  const { loading, error, isLoggedIn, hasCheckedAuth } = useSelector(
+    (state) => state.auth
+  );
 
   React.useEffect(() => {
     if (!inModal && hasCheckedAuth && isLoggedIn) {
-      navigate('/');
+      navigate("/");
     }
   }, [inModal, hasCheckedAuth, isLoggedIn, navigate]);
 
@@ -36,6 +37,7 @@ const Signup = ({ inModal = false }) => {
       });
       return;
     }
+
     if (!email.endsWith("@gmail.com")) {
       toast({
         title: "Invalid Email",
@@ -45,18 +47,19 @@ const Signup = ({ inModal = false }) => {
       return;
     }
 
-    const resultAction = await dispatch(signup({ name, email, password })); // 'signupUser' changed to 'signup'
+    const resultAction = await dispatch(signup({ name, email, password }));
 
-    if (signup.fulfilled.match(resultAction)) { // 'signupUser.fulfilled' changed to 'signup.fulfilled'
+    if (signup.fulfilled.match(resultAction)) {
       toast({
         title: "Signup Successful!",
-        description: "Your account has been created. Welcome!",
+        description: "Welcome to the platform!",
       });
       if (inModal) {
-        dispatch(setLoginModalOpen(false)); // Close modal on successful signup
+        dispatch(setLoginModalOpen(false));
       }
-    } else if (signup.rejected.match(resultAction)) { // 'signupUser.rejected' changed to 'signup.rejected'
-      const errorMessage = resultAction.payload || error || "Signup failed. Please try again.";
+    } else if (signup.rejected.match(resultAction)) {
+      const errorMessage =
+        resultAction.payload || error || "Signup failed. Please try again.";
       toast({
         title: "Signup Failed",
         description: errorMessage,
@@ -66,12 +69,27 @@ const Signup = ({ inModal = false }) => {
   };
 
   return (
-    <div className={inModal ? "p-6 pt-0" : "min-h-screen flex items-center justify-center px-4 bg-[#fffdf6]"}>
-      <Card className={inModal ? "w-full shadow-none border-none" : "w-full max-w-md p-6 space-y-4 bg-gray-50 shadow-lg rounded-xl"}>
+    <div
+      className={
+        inModal
+          ? "p-6 pt-0"
+          : "min-h-screen flex items-center justify-center px-4 bg-[#fffdf6]"
+      }
+    >
+      <Card
+        className={
+          inModal
+            ? "w-full shadow-none border-none"
+            : "w-full max-w-md p-6 space-y-4 bg-gray-50 shadow-lg rounded-xl"
+        }
+      >
         {!inModal && (
           <CardHeader className="flex justify-between items-center p-0">
             <h2 className="text-xl font-semibold">Create your account</h2>
-            <Link to="/login" className="text-sm text-blue-500 hover:underline">
+            <Link
+              to="/login"
+              className="text-sm text-blue-500 hover:underline"
+            >
               Login into existing account
             </Link>
           </CardHeader>
@@ -83,12 +101,10 @@ const Signup = ({ inModal = false }) => {
               <Label htmlFor="name">Name</Label>
               <Input
                 id="name"
-                name="name"
                 type="text"
                 placeholder="Full name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                autoComplete="name"
                 required
               />
             </div>
@@ -97,12 +113,10 @@ const Signup = ({ inModal = false }) => {
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
-                name="email"
                 type="email"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                autoComplete="off"
                 required
               />
             </div>
@@ -111,18 +125,20 @@ const Signup = ({ inModal = false }) => {
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
-                name="password"
                 type="password"
                 placeholder="********"
-                autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
 
-            <Button type="submit" className="w-full bg-black text-white hover:bg-black/90" disabled={loading}>
-              {loading ? 'Signing Up...' : 'Signup'}
+            <Button
+              type="submit"
+              className="w-full bg-black text-white hover:bg-black/90"
+              disabled={loading}
+            >
+              {loading ? "Signing Up..." : "Signup"}
             </Button>
           </form>
 

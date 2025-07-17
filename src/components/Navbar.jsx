@@ -3,8 +3,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useSelector, useDispatch } from 'react-redux';
 import { LogIn, UserPlus, Home as HomeIcon, Settings, LogOut } from 'lucide-react';
-
-// Make sure this exists in your authSlice.js
 import { logout } from '@/redux/slices/authSlice';
 
 const Navbar = () => {
@@ -25,47 +23,57 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-[rgb(255,107,0)] shadow-sm z-50 px-6 py-3 flex justify-between items-center">
-      {/* LEFT - LOGO */}
+    <nav className="fixed top-0 left-0 w-full bg-[rgb(255,107,0)] shadow-sm z-50 px-4 py-3 flex justify-between items-center">
+      {/* LOGO */}
       <Link to="/" className="text-xl font-bold text-white tracking-tight">
         Mindlet blogs
       </Link>
 
-      {/* RIGHT SIDE - Conditional Rendering */}
-      <div className="flex items-center gap-4">
+      {/* Buttons */}
+      <div className="flex items-center gap-2">
         {isLoggedIn ? (
           <>
             {isOnAdminSection ? (
-              <Button asChild variant="ghost" className="text-white hover:bg-orange-600 flex items-center gap-2">
-                <Link to="/"> <HomeIcon className="h-4 w-4" /> Home </Link>
-              </Button>
+              <Link to="/">
+                <Button variant="ghost" className="text-white hover:bg-white/10 px-3 py-2 text-sm">
+                  <HomeIcon className="h-4 w-4 mr-1" /> Home
+                </Button>
+              </Link>
             ) : (
-              <Button asChild variant="ghost" className="text-white hover:bg-orange-600 flex items-center gap-2">
-                <Link to="/admin"> <Settings className="h-4 w-4" /> Admin </Link>
-              </Button>
+              <Link to="/admin">
+                <Button variant="ghost" className="text-white hover:bg-white/10 px-3 py-2 text-sm">
+                  <Settings className="h-4 w-4 mr-1" /> Admin
+                </Button>
+              </Link>
             )}
             <Button
               onClick={handleLogout}
               variant="ghost"
-              className="text-white hover:bg-orange-600 flex items-center gap-2"
+              className="text-white hover:bg-white/10 px-3 py-2 text-sm"
             >
-              <LogOut className="h-4 w-4" /> Logout
+              <LogOut className="h-4 w-4 mr-1" /> Logout
             </Button>
           </>
         ) : (
           <>
             {isOnAuthPage ? (
-              <Button asChild variant="ghost" className="text-white hover:bg-orange-600 flex items-center gap-2">
-                <Link to="/"> <HomeIcon className="h-4 w-4" /> Home </Link>
-              </Button>
+              <Link to="/">
+                <Button variant="ghost" className="text-white hover:bg-white/10 px-3 py-2 text-sm">
+                  <HomeIcon className="h-4 w-4 mr-1" /> Home
+                </Button>
+              </Link>
             ) : (
               <>
-                <Button asChild variant="outline" className="text-white border-white hover:bg-white hover:text-[rgb(255,107,0)] flex items-center gap-2">
-                  <Link to="/login"> <LogIn className="h-4 w-4" /> Login </Link>
-                </Button>
-                <Button asChild variant="default" className="bg-white text-[rgb(255,107,0)] hover:bg-gray-100 flex items-center gap-2">
-                  <Link to="/signup"> <UserPlus className="h-4 w-4" /> Signup </Link>
-                </Button>
+                <Link to="/login">
+                  <Button variant="ghost" className="text-white hover:bg-white/10 px-3 py-2 text-sm">
+                    <LogIn className="h-4 w-4 mr-1" /> Login
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button variant="ghost" className="text-white hover:bg-white/10 px-3 py-2 text-sm">
+                    <UserPlus className="h-4 w-4 mr-1" /> Signup
+                  </Button>
+                </Link>
               </>
             )}
           </>

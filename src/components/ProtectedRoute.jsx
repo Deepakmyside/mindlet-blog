@@ -10,13 +10,14 @@ const ProtectedRoute = ({ children }) => {
   const { toast } = useToast();
 
   if (!isLoggedIn) {
-    dispatch(openLoginModal());
+    dispatch(setLoginModalOpen(true));
     toast({
       title: "Authentication Required",
       description: "Please log in to access this page.",
       variant: "destructive",
     });
-    return <div className="text-center mt-20 text-lg font-medium text-gray-600">Redirecting to login...</div>;
+   
+    return <Navigate to="/login" replace />
   }
 
   return children;

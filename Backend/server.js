@@ -14,8 +14,8 @@ app.use(cors());
 app.use(express.json());
 
 
-app.use("/api/auth", authRoutes);
-app.use("/api/blog", blogRoutes);
+app.use('/api/auth', authRoutes);
+app.use("/api/blogs", blogRoutes);
 app.use('/api/ai', aiRoutes);
 
 

@@ -4,86 +4,28 @@ import BlogCard from "@/components/BlogCard";
 import Footer from '../components/Footer';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-const dummyBlogs = [
-  {
-    _id: "1",
-    title: "Crypto is Booming",
-    description: "This is a blog about crypto...",
-    author: "bitcoinowner@blog.com",
-    createdAt: "2025-06-06T10:00:00Z",
-    tags: ['crypto'],
-    image: "https://images.pexels.com/photos/730547/pexels-photo-730547.jpeg"
-  },
-  {
-    _id: "2",
-    title: "Meditation Benefits",
-    description: "Meditation can help with peace...",
-    author: "healthguide@blog.com",
-    createdAt: "2025-07-05T10:00:00Z",
-    tags: ["health"],
-    image: "https://images.pexels.com/photos/6648545/pexels-photo-6648545.jpeg"
-  },
-  {
-    _id: "3",
-    title: "Bhakti",
-    description: "Bhakti is the ultimate key to achieve happiness satisfaction in life...",
-    author: "healthguide@blog.com",
-    createdAt: "2025-07-05T10:00:00Z",
-    tags: ["bhakti"],
-    image: "https://images.pexels.com/photos/32924881/pexels-photo-32924881.jpeg"
-  },
-  {
-    _id: "4",
-    title: "Startup Culture",
-    description: "The startup culture is evolving rapidly, with new trends emerging every day...",
-    author: "healthguide@blog.com",
-    createdAt: "2025-07-05T10:00:00Z",
-    tags: ["startup"],
-    image: "https://images.pexels.com/photos/3194521/pexels-photo-3194521.jpeg"
-  },
-  {
-    _id: "5",
-    title: "Finance",
-    description: "Finance is the backbone of any economy, driving growth and innovation...",
-    createdAt: "2025-07-05T10:00:00Z",
-    tags: ["finance"],
-    image: "https://images.pexels.com/photos/5466785/pexels-photo-5466785.jpeg"
-  },
-  {
-    _id: "6",
-    title: "Dance",
-    description: "Dance is a form of expression that transcends boundaries and cultures...",
-    author: "healthguide@blog.com",
-    createdAt: "2025-07-05T10:00:00Z",
-    tags: ["health"],
-    image: "https://images.pexels.com/photos/1701202/pexels-photo-1701202.jpeg"
-  },
-  {
-    _id: "7",
-    title: "Startup Culture",
-    description: "India is the new startup hub of the world, with a vibrant ecosystem...",
-    author: "startupindian@blog.com",
-    createdAt: "2025-07-05T10:00:00Z",
-    tags: ["startup"],
-    image: "https://images.pexels.com/photos/7376/startup-photos.jpg"
-  }
-];
+import axios from 'axios';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTag, setActiveTag] = useState("all");
-
-  useEffect(() => {
-    setBlogs(dummyBlogs);
-  }, []);
+  const [activeTag, setActiveTag] = useState("All");
 
   const filteredBlogs = blogs.filter((blog) => {
     const matchesSearch = blog.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesTag = activeTag === "all" ? true : blog.tags?.includes(activeTag);
+    const matchesTag = activeTag === "All" ? true : blog.tags?.includes(activeTag);
     return matchesSearch && matchesTag;
   });
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      const response = await axios.get("http://localhost:5000/api/blogs");
+      setBlogs(response.data.blogs);
+    };
+    fetchBlogs();
+  }, []);
 
   return (
     <>
@@ -120,7 +62,7 @@ const Home = () => {
 
           {/* Tag Filters */}
           <div className="flex gap-2 flex-wrap justify-center mb-10 px-4">
-            {["all", "finance", "health", "technology", "Education", "travel", "bhakti", "Food"].map(tag => (
+            {["All", "Finance", "Health", "Technology", "Education", "Travel", "Bhakti", "Food"].map(tag => (
               <button
                 key={tag}
                 onClick={() => setActiveTag(tag)}
@@ -149,6 +91,22 @@ const Home = () => {
               <Button className="text-white bg-orange-500 hover:bg-orange-600">Subscribe</Button>
             </div>
           </div>
+
+          {/* Animated About Us Link */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="flex justify-center mt-10 mb-14"
+          >
+            <Link
+              to="/about"
+              className="bg-orange-50 hover:bg-orange-100 border border-orange-300 px-6 py-3 rounded-full shadow-md text-orange-600 font-semibold tracking-wide transition duration-300 hover:shadow-lg hover:scale-105"
+            >
+              🚀 Meet the Team Behind Mindlet
+            </Link>
+          </motion.div>
         </main>
 
         <Footer />

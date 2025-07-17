@@ -1,6 +1,7 @@
 const Blog = require('../models/Blog');
 const ImageKit = require('imagekit');
 require('dotenv').config();
+const mongoose = require('mongoose');
 
 const imagekit = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
@@ -21,19 +22,14 @@ const uploadImageToImageKit = async (imageFile) => {
   }
 };
 
+// ✅ CREATE BLOG
 exports.createBlog = async (req, res) => {
   try {
-    const authorId = req.user.id;
     const { title, description, tags } = req.body;
 
-    // ✅ Simple description validation
-    if (!title || title.trim() === '') {
-      return res.status(400).json({ message: 'Blog title is required.' });
+    if (!title || !description) {
+      return res.status(400).json({ message: 'Title and description required' });
     }
-
-     if (!description || description.trim() === '') {
-      return res.status(400).json({ message: 'Blog content (description) cannot be empty.' });
-     }
 
     const tagsArray = tags ? tags.split(',').map(tag => tag.trim()) : [];
 
@@ -47,18 +43,53 @@ exports.createBlog = async (req, res) => {
       description,
       tags: tagsArray,
       imageUrl,
-      author: authorId,
+      author: req.user._id,
+      authorName: req.user.name, 
     });
 
     const savedBlog = await newBlog.save();
-
-    res.status(201).json({
-      message: 'Blog created successfully!',
-      blog: savedBlog,
-    });
-
+    res.status(201).json({ message: 'Blog created successfully', blog: savedBlog });
   } catch (error) {
     console.error('Error creating blog:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+// ✅ GET MY BLOGS
+exports.getMyBlogs = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const blogs = await Blog.find({ author: userId }).sort({ createdAt: -1 });
+    res.status(200).json({ blogs });
+  } catch (error) {
+    console.error('Error fetching blogs:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+ //GET ALL BLOGS
+
+ exports.getAllBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find().sort({ createdAt: -1 });
+    res.status(200).json({ blogs });
+  } catch (error) {
+    console.error("Error fetching all blogs:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+// DELETE BLOG 
+exports.deleteBlog = async (req, res) => {
+  const blogId = req.params.id;
+  const userId = req.user._id;
+
+  // Find blog and check if current user is the author
+  const blog = await Blog.findById(blogId);
+  if (!blog ||blog.author.toString() !== userId.toString()) {
+    return res.status(403).json({ message: "Unauthorized or blog not found" });
+  }
+
+  await Blog.findByIdAndDelete(blogId);
+  res.status(200).json({ message: "Blog deleted successfully" });
+};
+

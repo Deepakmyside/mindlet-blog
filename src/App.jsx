@@ -9,7 +9,7 @@ import BlogVisit from './pages/BlogVisit';
 import Admin from "./pages/Admin";
 import MyBlogs from './pages/MyBlogs';
 import AddBlog from "./pages/AddBlog";
-
+import AboutUs from "./pages/AboutUs";
 import { Provider } from 'react-redux';
 import store from './redux/store';
 import { loadUserFromStorage } from './redux/slices/authSlice';
@@ -30,8 +30,8 @@ const AppContent = () => {
           <Route path='/' element={<Home/>} />
           <Route path='/login' element={<Login/>} />
           <Route path='/signup' element={<Signup/>} />
-          <Route path='/blog/:id' element={<BlogVisit/>} />
-
+          <Route path='/blogs/:id' element={<BlogVisit/>} />
+          <Route path='/about' element={<AboutUs/>} />
           <Route
             path="/admin"
             element={
