@@ -162,7 +162,7 @@ type UseToast = () => {
   toasts: ToasterToast[]
 }
 
-export const useToast: UseToast = () => {
+ const useToast: UseToast = () => {
   const [state, setState] = React.useState<State>(memoryState)
 
   React.useEffect(() => {
@@ -184,3 +184,4 @@ export const useToast: UseToast = () => {
     ),
   }
 }
+export default useToast;

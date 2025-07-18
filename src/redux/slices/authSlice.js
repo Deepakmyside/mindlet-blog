@@ -1,3 +1,5 @@
+import API from '../../api/axios';
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
@@ -19,8 +21,8 @@ export const login = createAsyncThunk(
           'Content-Type': 'application/json',
         },
       };
-      const { data } = await axios.post(
-        'http://localhost:5000/api/auth/login',
+      const { data } = await API.post(
+        '/api/auth/login',
         { email, password },
         config
       );
@@ -44,8 +46,8 @@ export const signup = createAsyncThunk(
           'Content-Type': 'application/json',
         },
       };
-      const { data } = await axios.post(
-        'http://localhost:5000/api/auth/signup',
+      const { data } = await API.post(
+        '/api/auth/signup',
         { name, email, password },
         config
       );

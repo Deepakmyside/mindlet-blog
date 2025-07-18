@@ -1,3 +1,4 @@
+import API from "@/api/axios";
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -38,7 +39,7 @@ const BlogVisit = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/blogs/${id}`);
+        const res = await API.get(`/api/blogs/${id}`);
         setBlog(res.data.blog);
         setLikeCount(res.data.blog.likes?.length || 0);
         setComments(res.data.blog.comments || []);
@@ -58,8 +59,8 @@ const BlogVisit = () => {
     }
 
     try {
-      const res = await axios.put(
-        `http://localhost:5000/api/blogs/${blog._id}/like`,
+      const res = await API.put(
+        `/api/blogs/${blog._id}/like`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -78,8 +79,8 @@ const BlogVisit = () => {
     }
 
     try {
-      const res = await axios.post(
-        `http://localhost:5000/api/blogs/${blog._id}/comment`,
+      const res = await API.post(
+        `/api/blogs/${blog._id}/comment`,
         { text: newComment },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -95,7 +96,7 @@ const BlogVisit = () => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/blogs/${blog._id}`, {
+      await API.delete(`/api/blogs/${blog._id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert('Blog deleted successfully!');

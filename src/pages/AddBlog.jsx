@@ -39,7 +39,7 @@ const AddBlog = () => {
     description: "",
     tags: "",
     image: null,
-    author: "me@mindlet.com",
+    author: "",
   });
 
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
@@ -173,7 +173,7 @@ const AddBlog = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/blogs",
+        "https://mindletblog.onrender.com/api/blogs",
         formData,
         {
           headers: {

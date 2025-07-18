@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useDispatch, useSelector } from "react-redux";
 import { signup, setLoginModalOpen } from "../redux/slices/authSlice";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@//hooks/use-toast";
 
 const Signup = ({ inModal = false }) => {
   const [name, setName] = React.useState("");

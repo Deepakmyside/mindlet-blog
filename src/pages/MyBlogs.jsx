@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link, useNavigate } from 'react-router-dom';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Eye, Trash2 } from 'lucide-react';
 
 const MyBlogs = () => {
@@ -60,7 +60,7 @@ const MyBlogs = () => {
     if (!window.confirm("Are you sure you want to delete this blog?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/blogs/${blogId}`, {
+      await axios.delete(`https://mindletblog.onrender.com/api/blogs/${blogId}`, {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },

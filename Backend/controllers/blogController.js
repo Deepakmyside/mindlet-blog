@@ -83,7 +83,6 @@ exports.deleteBlog = async (req, res) => {
   const blogId = req.params.id;
   const userId = req.user._id;
 
-  // Find blog and check if current user is the author
   const blog = await Blog.findById(blogId);
   if (!blog ||blog.author.toString() !== userId.toString()) {
     return res.status(403).json({ message: "Unauthorized or blog not found" });

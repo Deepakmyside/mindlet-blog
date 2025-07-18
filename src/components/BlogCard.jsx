@@ -26,7 +26,7 @@ const [likeCount, setLikeCount] = useState(blog.likes?.length || 0);
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/blogs/${blog._id}/like`,
+        `https://mindletblog.onrender.com/api/blogs/${blog._id}/like`,
         {},
         {
           headers: {
@@ -60,7 +60,7 @@ const [likeCount, setLikeCount] = useState(blog.likes?.length || 0);
   </div>
 )}
 
-        <CardHeader className="p-4 pb-2 flex-grow line-clamp-">
+        <CardHeader className="p-4 pb-2 flex-grow ">
           <CardTitle className="text-xl font-bold text-gray-900 ">{blog.title}</CardTitle>
           <CardDescription className="text-sm text-gray-600 flex items-center gap-1 mt-1">
             <UserRound className="h-4 w-4" /> {blog.authorName || blog.author || "Unknown"}

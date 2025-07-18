@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 
 import { useDispatch, useSelector } from 'react-redux';
 import { login, setLoginModalOpen } from '../redux/slices/authSlice'; // 'loginUser' changed to 'login'
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = ({ inModal = false }) => {
   const [email, setEmail] = React.useState("");
