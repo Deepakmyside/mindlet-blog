@@ -19,7 +19,7 @@ Have a look please!
 | Backend     | Node.js, Express.js  
 | Database    | MongoDB + Mongoose  
 | Auth        | JWT (JSON Web Tokens)  
-| AI Service  | OpenAI (or mock integration)  
+| AI Service  | Gemini Ai (or mock integration)  
 | Deployment  | Netlify (Frontend), Render (Backend)  
 
 ---
