@@ -39,7 +39,7 @@ const BlogVisit = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const res = await API.get(`/api/blogs/${id}`);
+        const res = await API.get(`/blogs/${id}`);
         setBlog(res.data.blog);
         setLikeCount(res.data.blog.likes?.length || 0);
         setComments(res.data.blog.comments || []);
@@ -80,7 +80,7 @@ const BlogVisit = () => {
 
     try {
       const res = await API.post(
-        `/api/blogs/${blog._id}/comment`,
+        `/blogs/${blog._id}/comment`,
         { text: newComment },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -96,7 +96,7 @@ const BlogVisit = () => {
     if (!confirmDelete) return;
 
     try {
-      await API.delete(`/api/blogs/${blog._id}`, {
+      await API.delete(`/blogs/${blog._id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert('Blog deleted successfully!');

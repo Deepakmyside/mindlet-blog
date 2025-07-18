@@ -23,7 +23,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchBlogs = async () => {
-      const response = await API.get("/api/blogs");
+      const response = await API.get("/blogs");
       setBlogs(response.data.blogs);
     };
     fetchBlogs();

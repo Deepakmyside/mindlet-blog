@@ -10,9 +10,12 @@ dotenv.config();
 connectDB();
 
 const app = express();
-app.use(cors());
-app.use(express.json());
 
+app.use(express.json());
+app.use(cors({
+  origin: "https://mind-let-blog.netlify.app",
+  credentials: true,
+}));
 
 app.use('/api/auth', authRoutes);
 app.use("/api/blogs", blogRoutes);
@@ -25,6 +28,7 @@ app.get('/api/health', (req, res) => {
 app.get("/", (req, res) => {
   res.send("🔥 Backend is running");
 });
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
