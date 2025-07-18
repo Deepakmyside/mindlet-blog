@@ -1,4 +1,4 @@
-import API from ('@/api/axios');
+import API from "@/api/axios";
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // import axios from 'axios';
