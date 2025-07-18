@@ -5,16 +5,16 @@ import axios from "axios";
 
 // UI Components
 import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/Button";
+import { Textarea } from "@/components/ui/Textarea";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+} from "@/components/ui/Card";
+import { Label } from "@/components/ui/Label";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +23,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
 import { ImageIcon, Upload, Sparkles } from "lucide-react";
 
 import generateBlogContentWithAI from "../services/aiService";
