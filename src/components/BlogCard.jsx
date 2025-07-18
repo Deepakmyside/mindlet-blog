@@ -26,7 +26,7 @@ const [likeCount, setLikeCount] = useState(blog.likes?.length || 0);
 
     try {
       const response = await API.put(
-        `/api/blogs/${blog._id}/like`,
+        `/blogs/${blog._id}/like`,
         {},
         {
           headers: {

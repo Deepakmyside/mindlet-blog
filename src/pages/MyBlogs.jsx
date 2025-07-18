@@ -34,7 +34,7 @@ const MyBlogs = () => {
       }
 
       try {
-        const response = await API.get('/api/blogs/myblogs', {
+        const response = await API.get('/blogs/myblogs', {
           headers: {
             Authorization: `Bearer ${userToken}`,
           },
@@ -61,7 +61,7 @@ const MyBlogs = () => {
     if (!window.confirm("Are you sure you want to delete this blog?")) return;
 
     try {
-      await API.delete(`/api/blogs/${blogId}`, {
+      await API.delete(`/blogs/${blogId}`, {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },

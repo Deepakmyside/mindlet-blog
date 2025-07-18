@@ -174,7 +174,7 @@ const AddBlog = () => {
       }
 
       const response = await API.post(
-        "/api/blogs",
+        "/blogs",
         formData,
         {
           headers: {
@@ -193,7 +193,7 @@ const AddBlog = () => {
         description: "",
         tags: "",
         image: null,
-        author: "me@mindlet.com",
+       
       });
 
       setImagePreviewUrl(null);

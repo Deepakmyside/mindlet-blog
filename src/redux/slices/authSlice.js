@@ -22,7 +22,7 @@ export const login = createAsyncThunk(
         },
       };
       const { data } = await API.post(
-        '/api/auth/login',
+        '/auth/login',
         { email, password },
         config
       );
@@ -47,7 +47,7 @@ export const signup = createAsyncThunk(
         },
       };
       const { data } = await API.post(
-        '/api/auth/signup',
+        '/auth/signup',
         { name, email, password },
         config
       );

@@ -8,11 +8,11 @@ const generateBlogContentWithAI = async (title, existingContent) => {
   }
 
   try {
-    const response = await axios.post('/api/ai/generate-blog', {
+    const response = await axios.post('/ai/generate-blog', {
       title: title,
-      existingContent: existingContent,
+      existingContent: existingContent, 
     });
-    return response.data.generatedContent;
+    return response.data.generatedContent; 
   } catch (error) {
     console.error('AI Service Error:', error.response ? error.response.data : error.message);
     const errorMessage = error.response?.data?.message || 'Failed to generate content. Please try again.';
