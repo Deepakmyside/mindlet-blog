@@ -38,7 +38,7 @@ export const login = createAsyncThunk(
 );
 
 export const signup = createAsyncThunk(
-  'auth/signup',
+  'api/auth/signup',
   async ({ name, email, password }, { rejectWithValue }) => {
     try {
       const config = {
