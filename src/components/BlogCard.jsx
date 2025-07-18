@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setLoginModalOpen } from '../redux/slices/authSlice';
-import axios from 'axios';
+import API from '@/api/axios';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -25,8 +25,8 @@ const [likeCount, setLikeCount] = useState(blog.likes?.length || 0);
     }
 
     try {
-      const response = await axios.put(
-        `https://mindletblog.onrender.com/api/blogs/${blog._id}/like`,
+      const response = await API.put(
+        `/api/blogs/${blog._id}/like`,
         {},
         {
           headers: {

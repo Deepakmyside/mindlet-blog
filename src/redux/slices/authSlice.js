@@ -1,7 +1,7 @@
-import API from '../../api/axios';
+import API from ('@/api/axios');
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+// import axios from 'axios';
 
 const initialState = {
   userToken: localStorage.getItem('userToken') || null,
@@ -22,7 +22,7 @@ export const login = createAsyncThunk(
         },
       };
       const { data } = await API.post(
-        '/auth/login',
+        '/api/auth/login',
         { email, password },
         config
       );
@@ -47,7 +47,7 @@ export const signup = createAsyncThunk(
         },
       };
       const { data } = await API.post(
-        '/auth/signup',
+        '/api/auth/signup',
         { name, email, password },
         config
       );

@@ -29,6 +29,11 @@ app.get("/", (req, res) => {
   res.send("🔥 Backend is running");
 });
 
+app.use((req, res, next) => {
+  console.log("Request Origin:", req.headers.origin);
+  next();
+});
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

@@ -1,7 +1,8 @@
+import API from "@/api/axios";
 import React, { useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 
 // UI Components
 import { Input } from "@/components/ui/Input";
@@ -172,8 +173,8 @@ const AddBlog = () => {
         formData.append("image", blogData.image);
       }
 
-      const response = await axios.post(
-        "https://mindletblog.onrender.com/api/blogs",
+      const response = await API.post(
+        "/api/blogs",
         formData,
         {
           headers: {
