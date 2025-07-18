@@ -1,12 +1,86 @@
-# React + Vite
+# 🌸 Mindlet Blog – A Socially Impactful Blogging Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Mindlet Blog** is a full-stack web application built to empower users to share thoughts, stories, and ideas — with a special focus on accessibility and inclusivity. Designed with modern UI and robust backend, it supports blog creation and management, AI-powered content generation, likes, comments, and user authentication.
 
-Currently, two official plugins are available:
+Have a look please!
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Live Demo
 
-## Expanding the ESLint configuration
+🔗 [Visit the Live Site](https://mind-let-blog.netlify.app)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🧠 Tech Stack
+
+| Layer       | Technology               |
+|-------------|--------------------------|
+| Frontend    | React, Vite, Shadcn/ui, Tailwind CSS  
+| Backend     | Node.js, Express.js  
+| Database    | MongoDB + Mongoose  
+| Auth        | JWT (JSON Web Tokens)  
+| AI Service  | OpenAI (or mock integration)  
+| Deployment  | Netlify (Frontend), Render (Backend)  
+
+---
+
+## ✨ Features
+
+### 🔐 Authentication
+- User signup/login with JWT
+- Protected routes for blog creation, likes, and comments
+
+### 📝 Blog System
+- Create, read, delete blogs
+- Upload images via ImageKit /*(will be working very soon)*/
+- Tags support with comma-separated input
+
+### 🤖 AI Blog Generation
+- Generate blog content using AI based on title and description
+- Status messages and error handling included
+
+### ❤️ Like System
+- Authenticated users can like/unlike blogs
+- Like count displayed dynamically
+
+### 💬 Comment System
+- Authenticated users can comment on blogs
+- Users can delete their own comments /*(will add this feature soon)*/
+
+### 🧘‍♂️ Author Attribution
+- Author name displayed using decoded JWT
+- Only blog owner sees delete option
+
+---
+
+## 📦 Folder Structure
+
+
+
+
+
+---
+
+## 🛠️ Setup Instructions
+
+### 🔧 Frontend
+
+```bash
+cd client
+npm install
+VITE_API_BASE_URL=https://mindletblog.onrender.com/api
+npm run dev
+
+### 🔧 Backend
+
+```bash
+cd server
+npm install
+PORT=5000
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
+IMAGEKIT_PUBLIC_KEY=your_key
+IMAGEKIT_PRIVATE_KEY=your_key
+IMAGEKIT_URL_ENDPOINT=your_url
+npm run start
+
