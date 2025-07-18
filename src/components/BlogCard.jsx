@@ -5,7 +5,7 @@ import { setLoginModalOpen } from '../redux/slices/authSlice';
 import axios from 'axios';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Heart, MessageSquareText, CalendarDays, UserRound } from 'lucide-react';
 import LikeButton from "@/components/LikeButton";
 

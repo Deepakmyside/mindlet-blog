@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { useSelector, useDispatch } from 'react-redux';
 import { LogIn, UserPlus, Home as HomeIcon, Settings, LogOut } from 'lucide-react';
 import { logout } from '@/redux/slices/authSlice';

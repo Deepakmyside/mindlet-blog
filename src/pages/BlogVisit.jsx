@@ -1,10 +1,10 @@
-import API from "@/api/axios";
+import API from "../api/axios";
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { UserRound, MessageSquareText } from 'lucide-react';
 import LikeButton from '@/components/LikeButton';
 import { setLoginModalOpen } from '../redux/slices/authSlice';

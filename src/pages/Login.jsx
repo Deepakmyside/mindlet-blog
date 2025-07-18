@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Label } from "@/components/ui/Label";
+import { Input } from "@/components/ui/Input";
 
 import { useDispatch, useSelector } from 'react-redux';
 import { login, setLoginModalOpen } from '../redux/slices/authSlice'; // 'loginUser' changed to 'login'
