@@ -47,6 +47,13 @@ exports.createBlog = async (req, res) => {
       authorName: req.user.name, 
     });
 
+console.log("ImageKit ENV:", {
+  publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+});
+
+
     const savedBlog = await newBlog.save();
     res.status(201).json({ message: 'Blog created successfully', blog: savedBlog });
   } catch (error) {
@@ -78,6 +85,7 @@ exports.getMyBlogs = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 // DELETE BLOG 
 exports.deleteBlog = async (req, res) => {
   const blogId = req.params.id;
