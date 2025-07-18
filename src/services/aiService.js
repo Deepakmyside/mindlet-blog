@@ -1,6 +1,6 @@
 // src/services/aiService.js
 
-import API from ("@/api/axios");
+import API from "@/api/axios";
 
 const generateBlogContentWithAI = async (title, existingContent) => {
   if (!title.trim()) {

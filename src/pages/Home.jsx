@@ -1,11 +1,11 @@
-import  api from '../api/axios';
+import  API from '@/api/axios';
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import BlogCard from "@/components/BlogCard";
 import Footer from '../components/Footer';
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import axios from 'axios';
+
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -23,7 +23,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchBlogs = async () => {
-      const response = await API.get("/blogs");
+      const response = await API.get("/api/blogs");
       setBlogs(response.data.blogs);
     };
     fetchBlogs();
