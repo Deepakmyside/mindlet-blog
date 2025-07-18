@@ -8,7 +8,7 @@ const generateBlogContentWithAI = async (title, existingContent) => {
   }
 
   try {
-    const response = await axios.post('/ai/generate-blog', {
+    const response = await API.post('/ai/generate-blog', {
       title: title,
       existingContent: existingContent, 
     });
